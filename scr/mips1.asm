@@ -9,7 +9,8 @@ msg_defesa: .asciiz ">>>>> Você defendeu!\n"
 msg_concentrar: .asciiz ">>>>> Você concentrou!\n"
 msg_invalida: .asciiz ">>>>> Opção inválida! Tente novamente!\n"
 msg_sair: .asciiz ">>>>> Fim de Jogo!\n" 
-
+msg_rodada: .asciiz ">>>>> Rodada "
+msg_rodada_fim: .asciiz " <<<<< \n"
 
 
 .text
@@ -25,10 +26,9 @@ main:
 	la $a0, subtitulo
 	syscall 
 	
-	li $v0, 10 		# O 10 encerra o programa
-	syscall 
 	
 menu_loop: 
+
 	
 	li $v0, 4 		#mostrar menu
 	la $a0, menu 		#carregando o endereço de memória de menu no registrador de argumento a0 
@@ -38,19 +38,33 @@ menu_loop:
 	syscall 
 	move $t0, $v0 		# A entrada do usuário passa para o registrador temporário t0 
 	
+	addi $s0, $s0, 1  	#contador de rodadas
+	
+	li $v0, 4
+	la $a0, msg_rodada	#primeira parte da mensagem de rodada
+	syscall 
+	
+	li $v0, 1 
+	move $a0, $s0 		#passa o número da rodada para que seja iterativo 
+	syscall 
+	
+	li $v0, 4
+	la $a0, msg_rodada_fim
+	syscall 
+	
 	beq $t0, $zero, sair	# se o t0 for igual a zero, pulo para a flag de saída do programa 
 	
 	li $t1, 1
-	beq $t1, 1, atacar 	#se o t1 for igual a um, pulo para a flag de atacar...
+	beq $t0, $t1, atacar 	#se o t1 for igual a um, pulo para a flag de atacar...
 	
 	li $t1, 2 
-	beq $t1, 2, defender 	# " " " " 
+	beq $t0, $t1, defender 	# " " " " 
 	
 	li $t1, 3
-	beq $t1, 3, concentrar # " " " " 
+	beq $t0, $t1, concentrar 	# " " " " 
 	
 	li $v0, 4 
-	la $a0, msg_invalidada # Caso a entrada não seja 1,2,3 aparece uma mensagem inválida
+	la $a0, msg_invalida 	# Caso a entrada não seja 1,2,3 aparece uma mensagem inválida
 	syscall 
 	
 	j menu_loop 		# jump para o início da flag menu_loop
@@ -59,7 +73,7 @@ menu_loop:
 atacar: 
 
 	li $v0, 4 
-	la $a0, msg_ataque # a0 recebe o endereço de memória da string ' msg_ataque ' 
+	la $a0, msg_ataque 	# a0 recebe o endereço de memória da string ' msg_ataque ' 
 	syscall 
 	
 	j menu_loop
@@ -85,6 +99,6 @@ sair:
 	li $v0, 4
 	la $a0, msg_sair 
 	syscall
-	li $v0, 10 # Função 10 para encerrar o programa
+	li $v0, 10 		# Função 10 para encerrar o programa
 	syscall 
 	
