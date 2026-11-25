@@ -157,10 +157,19 @@ vez_atual:
 	
 
 atacar: 
-
+	
+	lw $t2, 8($s2)		# lendo da memória a energia do ATUAL JOGADOR e carregando no registrador
+	addi $t2, $t2, -15 	# aqui o jogador perde energia por ataque
+	sw $t2, 8($s2) 		# faz a gravação/atualização na memória
+	
+	lw $t3, 4($s3)		# lendo da memória a vida do ALVO
+	addi $t3, $t3, -20	# alvo perde 20 de vida
+	sw $t3, 4($s3)		
+	
 	li $v0, 4 
 	la $a0, msg_ataque 	# a0 recebe o endereço de memória da string ' msg_ataque ' 
 	syscall 
+	
 	
 	j trocar_vez
 	
