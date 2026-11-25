@@ -88,6 +88,31 @@ menu_loop:
 	la $a0, quebra_linha
 	syscall
 #===============================================================================================================================#
+				# decide a vez do jogador
+				
+	beq $s1, $zero, vez_j1 #condicional if do jogador 1
+	
+	la $s2, jog2		#vez do jogador 2
+	la $s3, jog1		
+	j vez_atual 
+	
+vez_j1:
+	
+	la $s2, jog1		#vez do jogador 1 agir
+	la $s3, jog2
+
+vez_atual:
+	
+	li $v0, 4
+	la $a0, txt_vez
+	syscall
+	addi $a0, $s1, 1	#reutilizamos $s1 para mostrar a vez de x jogador
+	
+	li $v0, 1
+	syscall 
+#===============================================================================================================================#
+
+
 				#menu e desvios (jumps) 
 				
 				
@@ -122,7 +147,7 @@ menu_loop:
 	beq $t0, $t1, defender 	# " " " " 
 	
 	li $t1, 3
-	beq $t0, $t1, concentrar 	# " " " " 
+	beq $t0, $t1, concentrar # " " " " 
 	
 	li $v0, 4 
 	la $a0, msg_invalida 	# Caso a entrada não seja 1,2,3 aparece uma mensagem inválida
@@ -137,7 +162,7 @@ atacar:
 	la $a0, msg_ataque 	# a0 recebe o endereço de memória da string ' msg_ataque ' 
 	syscall 
 	
-	j menu_loop
+	j trocar_vez
 	
 defender:
 
@@ -145,7 +170,7 @@ defender:
 	la $a0, msg_defesa
 	syscall 
 	
-	j menu_loop
+	j trocar_vez
 
 concentrar: 
 	
@@ -153,6 +178,11 @@ concentrar:
 	la $a0, msg_concentrar
 	syscall
 	
+	j trocar_vez
+	
+trocar_vez:
+	
+	xori $s1, $s1, 1 	# 0 vira 1 e 1 vira 0
 	j menu_loop
 	
 sair:
