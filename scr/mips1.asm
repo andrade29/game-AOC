@@ -40,6 +40,9 @@ main:
 	
 menu_loop: 
 	
+#===============================================================================================================================#
+				#jogador 1 
+				
 	li $v0, 4
 	la $a0, txt_j1		# texto de vida do jogador 1 
 	syscall
@@ -61,8 +64,33 @@ menu_loop:
 	la $a0, quebra_linha
 	syscall
 	
+#===============================================================================================================================#
+				#jogador 2
 
-	
+	li $v0, 4
+	la $a0, txt_j2		# "Jogador 2 - Vida: "
+	syscall
+
+	la $t3, jog2		# agora $t3 aponta para o jog2
+	lw $a0, 4($t3)		# vida do jogador 2
+	li $v0, 1
+	syscall
+
+	li $v0, 4
+	la $a0, txt_energia
+	syscall
+
+	lw $a0, 8($t3)		# energia do jogador 2
+	li $v0, 1
+	syscall
+
+	li $v0, 4
+	la $a0, quebra_linha
+	syscall
+#===============================================================================================================================#
+				#menu e desvios (jumps) 
+				
+				
 	li $v0, 4 		#mostrar menu
 	la $a0, menu 		#carregando o endereço de memória de menu no registrador de argumento a0 
 	syscall 
