@@ -11,6 +11,7 @@ msg_invalida: .asciiz ">>>>> Opção inválida! Tente novamente!\n"
 msg_sair: .asciiz ">>>>> Fim de Jogo!\n" 
 msg_rodada: .asciiz ">>>>> Rodada "
 msg_rodada_fim: .asciiz " <<<<< \n"
+msg_sem_energia: .asciiz ">>>>> Energia insuficiente! O ataque precisa de 15.\n"
 jog1: .word 0, 100, 50	# [elemnto, vida e energia]
 jog2: .word 1, 100, 50 
 txt_j1: .asciiz "\nJogador 1 - Vida: "
@@ -159,6 +160,9 @@ vez_atual:
 atacar: 
 	
 	lw $t2, 8($s2)		# lendo da memória a energia do ATUAL JOGADOR e carregando no registrador
+	li $t1, 15
+	blt $t2, $t1, sem_energia	# se a energia atual for menor que 15 jump para sem_energia
+	
 	addi $t2, $t2, -15 	# aqui o jogador perde energia por ataque
 	sw $t2, 8($s2) 		# faz a gravação/atualização na memória
 	
@@ -204,6 +208,13 @@ trocar_vez:
 	xori $s1, $s1, 1 	# 0 vira 1 e 1 vira 0
 	j menu_loop
 	
+
+sem_energia:
+	
+	li $v0, 4	# mostrando a mensagem de sem energia SEM passar a vez
+	la $a0, msg_sem_energia
+	syscall
+	j menu_loop
 sair:
 
 	li $v0, 4
