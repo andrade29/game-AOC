@@ -182,6 +182,16 @@ defender:
 	j trocar_vez
 
 concentrar: 
+
+	lw $t2, 8($s2)		# carrega a energia da memória
+	addi $t2, $t2, 20	#soma 20 de energia no JOGADOR ATUAL
+	
+	li $t1, 100
+	ble $t2, $t1, conc_ok	# se energia carregada em $t2 for menor ou igual a $t1 ( <= 100 ) OK
+	li $t2, 100		# senão, limito em 100
+conc_ok:
+	
+	sw $t2, 8($s2)		#gravo a nova energia na memória
 	
 	li $v0, 4
 	la $a0, msg_concentrar
