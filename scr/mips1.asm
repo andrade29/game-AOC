@@ -11,6 +11,15 @@ msg_invalida: .asciiz ">>>>> Opção inválida! Tente novamente!\n"
 msg_sair: .asciiz ">>>>> Fim de Jogo!\n" 
 msg_rodada: .asciiz ">>>>> Rodada "
 msg_rodada_fim: .asciiz " <<<<< \n"
+jog1: .word 0, 100, 50	# [elemnto, vida e energia]
+jog2: .word 1, 100, 50 
+txt_j1: .asciiz "\nJogador 1 - Vida: "
+txt_j2: .asciiz "Jogador 2 - Vida: "
+txt_energia:  .asciiz "  Energia: "
+txt_vez: .asciiz "\nVez do Jogador "
+msg_vitoria: .asciiz "\n***** VITORIA DO JOGADOR "
+msg_fim_vit: .asciiz " *****\n"
+quebra_linha: .asciiz "\n"
 
 
 .text
@@ -26,8 +35,32 @@ main:
 	la $a0, subtitulo
 	syscall 
 	
+	li $s1, 0 		# registrador $s são usados para guardar valores a longo prazo e que não podem se perder // carregando o jogador 1
+	
 	
 menu_loop: 
+	
+	li $v0, 4
+	la $a0, txt_j1		# texto de vida do jogador 1 
+	syscall
+	
+	la $t3, jog1		# usarei o t3 para iniciliazlir o jogador 1
+	lw $a0, 4($t3) 		# lw usado para ler uma palavra de 4bytes da memória e 4($t3) porque a .word ocupa 4 bytes // aqui é a vida
+	li $v0, 1 		# a função 1 imprime um inteiro
+	syscall
+	
+	li $v0, 4
+	la $a0, txt_energia
+	syscall
+	
+	lw $a0, 8($t3)		# como foi declarado elemento, vida e energia a energia fica +8
+	li $v0, 1
+	syscall
+	
+	li $v0, 4
+	la $a0, quebra_linha
+	syscall
+	
 
 	
 	li $v0, 4 		#mostrar menu
